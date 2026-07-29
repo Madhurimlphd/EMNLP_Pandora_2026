@@ -14,7 +14,7 @@ import time
 
 col_name = sys.argv[1]
 
-#file_path="/home/CAMPUS/d22130161/label_agg_model_training/All_LLM_EXIST2023.csv"
+
 file_path=sys.argv[2]
 data = pd.read_csv(file_path)
 
@@ -27,10 +27,7 @@ print("Received file path is:", file_path)
 print("length of the dataset",len(data))
 
 
-#print("---------------Llama------------------")
-#llama_col = data["llama_anno"].astype(str).str.strip().str.upper()
-#data = data[data[col_name].astype(str).str.strip().str.upper().isin(["YES", "NO"])]
-#col_name="llama_anno"
+
 
 print("length of the updated dataset",len(data))
 
@@ -84,29 +81,7 @@ tokenizer = RobertaTokenizer.from_pretrained(model_path)
 model = RobertaForSequenceClassification.from_pretrained(model_path,num_labels=2)  
 
 
-#print("XLM-R")
-#model_path = "xlm-roberta-base"
-#tokenizer = AutoTokenizer.from_pretrained(model_path)
-#model=XLMRobertaForSequenceClassification.from_pretrained(model_path,num_labels=2)
 
-
-
-#print("Roberta")
-#model_path="xlm-roberta-base"
-#tokenizer = RobertaTokenizer.from_pretrained(model_path)
-#model = RobertaForSequenceClassification.from_pretrained(model_path,num_labels=2)  
-
-#https://github.com/blt-tsp/Fine-tuning-BERT-and-summarization-/blob/main/RoBERTa_finetuning.ipynb
-
-#print("using mBERT")
-#model_path="bert-base-multilingual-cased"
-#tokenizer = BertTokenizer.from_pretrained(model_path)
-#model = BertForSequenceClassification.from_pretrained(model_path, num_labels=2)
-
-
-##### Check which model type was loaded
-#print("Model type:", model.config.model_type)
-#print("Model class:", model.__class__.__name__)
 
 
 
@@ -156,10 +131,6 @@ print("-----------------------Device setup--------------------------")
 
 
 
-#model = BertForSequenceClassification.from_pretrained("bert-base-multilingual-cased", num_labels=2)
-#model = AutoModelForSequenceClassification.from_pretrained("ai4bharat/indic-bert", num_labels=2)
-#model=XLMRobertaForSequenceClassification.from_pretrained(model_path,num_labels=2)
-#model = BertForSequenceClassification.from_pretrained(model_path,num_labels=2,output_attentions=False,output_hidden_states=False)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
@@ -175,13 +146,7 @@ print("CUDA available:", torch.cuda.is_available())
 print("Model device:", model.device)
 print("Model device Parameters:", next(model.parameters()).device)
 
-#print("CUDA available:", torch.cuda.is_available())
 
-#if torch.cuda.is_available():
-#    print("GPU:", torch.cuda.get_device_name(0))
-#    print("Model is running on GPU")
-#else:
-#    print("No CUDA GPU detected. Running on CPU.")
 
 # Optimizer
 print("--------------Optimizer and scheduler------------")
@@ -249,16 +214,13 @@ with torch.no_grad():
 
         correct += (predictions == labels).sum().item()
         total += labels.size(0)
-        all_predictions.extend(predictions.cpu().numpy())  #this line from chatgpt
-        all_labels.extend(labels.cpu().numpy())         #this line from chatgpt
+        all_predictions.extend(predictions.cpu().numpy())  
+        all_labels.extend(labels.cpu().numpy())        
 
 eval_time = time.perf_counter() - t_eval0
 accuracy = correct / total
 
 
-#print("CUDA available:", torch.cuda.is_available())
-#print("GPU:", torch.cuda.get_device_name(0))
-#print("Model device:", model.device)
 
 
 
@@ -267,8 +229,8 @@ print("::::Results for:::: ", col_name)
 print("::::file name::::::",file_path)
 print(f"Validation Accuracy: {accuracy:.4f} Eval time :{eval_time}")
 
-# Compute F1 Score (macro and micro)
-f1_macro = f1_score(all_labels, all_predictions, average='macro') #this line from chatgpt
+
+f1_macro = f1_score(all_labels, all_predictions, average='macro') 
 
 pre=precision_score(all_labels, all_predictions, average='macro')
 recall=recall_score(all_labels, all_predictions, average='macro')
@@ -276,8 +238,6 @@ recall=recall_score(all_labels, all_predictions, average='macro')
 print(f"F1 Score (Macro): {f1_macro:.4f}")
 print(f"Precision (Macro): {pre:.4f}")
 print(f"Recall (Macro): {recall:.4f}")
-
-#print("-----------GPU Status-------------")
 
 
 
