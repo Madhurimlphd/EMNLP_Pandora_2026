@@ -20,8 +20,7 @@ print("Calling model")
 
 tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-Instruct-v0.3")
 model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-Instruct-v0.3")
-#model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-Instruct-v0.3",torch_dtype=torch.float16,device_map="auto") 
-#model.eval()
+
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -78,11 +77,6 @@ Text:
     ).to(model.device)
 
     outputs = model.generate(**inputs, max_new_tokens=40)
-#print(tokenizer.decode(outputs[0][inputs["input_ids"].shape[-1]:]))
-#print(tokenizer.decode(outputs[0][inputs["input_ids"].shape[-1]:],skip_special_tokens=True).strip())
-
-    #print("torch cuda memory",torch.cuda.memory_allocated() / 1024**3, "GB allocated")
-    #print("torch cuda memory",torch.cuda.memory_reserved() / 1024**3, "GB reserved")
     
     label = tokenizer.decode(
         outputs[0][inputs["input_ids"].shape[-1]:],
@@ -91,10 +85,7 @@ Text:
 
     return label
 
-#labels = [classify_text(t) for t in texts]
 
-#for text, label in zip(texts, labels):
-#    print(label, "-", text)
 
 df["mistral_anno"] = df["tweet"].apply(classify_text)
 
